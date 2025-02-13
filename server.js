@@ -10,13 +10,18 @@ const port = process.env.PORT || 3003; //aws ssm vault - alternatives
 const server = http.createServer((req, res) => {
     let filepath;
 
-    const __filname = fileURLToPath(
-        import.meta.url);
+    const __filname = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filname);
 
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, DELETE");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+    if (req.method === "OPTIONS") { //preflight requests
+        res.writeHead(200);
+        res.end();
+        return;
+    }
 
     if (req.url === "/") {
         filepath = "index.html";
@@ -57,14 +62,26 @@ const server = http.createServer((req, res) => {
 
         req.on("end", () => {
             console.log(`Received body: ${body}`);
-            // res.writeHead(200, { "Content-Type": "application/json" });
-            // res.end(JSON.stringify({ status: "success", receivedMessage: body }));
+
+            res.write("Hello from server");
+
+            // if (body) {
+                
+            // } else {
+                
+            // }
+            //res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ status: "success", receivedMessage: body }));
         });
-    } else {
+    } else if (req.method === "GET" && req.url === "/api/data") {
+            const data = { message: "Hello from the API!" };
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(data));
+            console.log("'GET' job done!");
+        }
+
         // res.writeHead(404, { "Content-Type": "text/plain" });
         // res.end("Not found!");
-    }
-
 });
 
 server.listen(port, () => {

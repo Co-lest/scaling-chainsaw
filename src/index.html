@@ -85,7 +85,7 @@
     form.addEventListener('submit', (e) => {
         e.preventDefault(); //prevent reloading page
 
-        sendMessage(nameVar.value, ageVar.value, schoolVar.value, interestsVar.value);
+        sendMessage(nameVar.value, ageVar.value, hometownVar.value, schoolVar.value, interestsVar.value);
 
         form.reset();
     });
@@ -113,10 +113,27 @@
                 return response.json();
             }
         }).then((data) => {
-            console.log(`Success: ${data}`);
+            console.log(`Success: ${JSON.parse(data)}`);
         }).catch((error) => {
             console.error(`Error: ${error}`);
         });
+
+        fetch(`http://localhost:${window.location.port}/api/messages`)
+        .then((res) => {
+            if (res.ok) {
+                console.log(`Api is ok`);
+            } else {
+                console.error(`Api is not ok`);
+                return;
+            }
+        })
+        .then((data) => {
+            console.log(JSON.parse(data));
+        })
+        .catch((error) => {
+            console.error(`Error fetching: ${error}`);
+            return;
+        })
     }
 </script>
 </html>
