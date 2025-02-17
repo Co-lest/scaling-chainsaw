@@ -1,68 +1,314 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
-  a:hover {
-    color: #747bff;
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f9fafb;
+    color: #1f2937;
+    line-height: 1.5;
   }
-  button {
-    background-color: #f9f9f9;
+  
+  /* Layout */
+  .min-h-screen {
+    min-height: 100vh;
   }
-}
+  
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  /* Navigation */
+  .nav {
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+  }
+  
+  .nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .nav-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #7c3aed;
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-size: 1.125rem;
+    transition: background-color 0.2s;
+  }
+  
+  .nav-link:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .nav-link.active {
+    background-color: #ede9fe;
+    color: #7c3aed;
+  }
+  
+  /* Main Content */
+  .main {
+    padding: 2rem;
+  }
+  
+  /* Home Page */
+  .section-title {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .section-title h2 {
+    font-size: 2.5rem;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+  }
+  
+  .section-title p {
+    font-size: 1.25rem;
+    color: #6b7280;
+  }
+  
+  .grid {
+    display: grid;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+  
+  @media (min-width: 768px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  .card {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  /* Profile Section */
+  .profile-image {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    display: block;
+  }
+  
+  .profile-info {
+    text-align: center;
+  }
+  
+  .profile-name {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  .profile-detail {
+    color: #6b7280;
+  }
+  
+  /* Activity Feed */
+  .activity-item {
+    padding: 1rem;
+    background-color: #f9fafb;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .activity-title {
+    font-weight: 500;
+  }
+  
+  .activity-time {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+  
+  /* Friends Page */
+  .friends-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .search-input {
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    width: 20rem;
+  }
+  
+  .friends-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .friends-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .friends-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  .friend-card {
+    text-align: center;
+  }
+  
+  .friend-image {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+  }
+  
+  .connect-button {
+    background-color: #7c3aed;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.2s;
+  }
+  
+  .connect-button:hover {
+    background-color: #6d28d9;
+  }
+  
+  /* Messages Page */
+  .messages-container {
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    height: 600px;
+    display: flex;
+  }
+  
+  .messages-sidebar {
+    width: 33.333%;
+    border-right: 1px solid #e5e7eb;
+  }
+  
+  .messages-header {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .contact-list {
+    list-style: none;
+  }
+  
+  .contact-item {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .contact-item:hover {
+    background-color: #f9fafb;
+  }
+  
+  .contact-image {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+  }
+  
+  .messages-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .message-input {
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    width: 100%;
+    margin: 1rem 0;
+  }
+  
+  /* Settings Page */
+  .settings-container {
+    max-width: 42rem;
+    margin: 0 auto;
+  }
+  
+  .settings-section {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+  }
+  
+  .settings-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .settings-group h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .settings-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .settings-label {
+    font-size: 1.125rem;
+  }
+  
+  .settings-select {
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+  }
+  
+  .settings-checkbox {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
