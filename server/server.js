@@ -3,7 +3,7 @@ import fs from "fs/promises";
 import { fileURLToPath } from "url";
 import path from "path";
 import "dotenv/config";
-// import mysql from "mysql2"
+import cors from "cors";
 
 const port = process.env.PORT || 3003; //aws ssm vault - alternatives
 
@@ -27,7 +27,7 @@ const server = http.createServer((req, res) => {
         filepath = "index.html";
         console.log(req.url);
 
-        const fullpath = path.join(__dirname, "src", filepath);
+        const fullpath = path.join(__dirname, "frontend", filepath);
         (async() => {
             try {
                 const fileData = await fs.readFile(fullpath);
