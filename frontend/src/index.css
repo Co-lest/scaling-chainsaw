@@ -1,314 +1,197 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+  @import "tailwindcss";
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
   
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background-color: #f9fafb;
-    color: #1f2937;
-    line-height: 1.5;
-  }
-  
-  /* Layout */
-  .min-h-screen {
-    min-height: 100vh;
-  }
-  
-  .container {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
-  
-  /* Navigation */
   .nav {
-    background-color: white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    padding: 1rem;
+    @apply bg-white shadow-md;
   }
   
   .nav-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    @apply flex items-center justify-between px-4 py-3 mx-auto max-w-7xl;
   }
   
   .nav-brand {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #7c3aed;
+    @apply text-2xl font-bold text-blue-600;
   }
   
   .nav-links {
-    display: flex;
-    gap: 1.5rem;
+    @apply flex space-x-4;
   }
   
   .nav-link {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    border: none;
-    background: none;
-    font-size: 1.125rem;
-    transition: background-color 0.2s;
-  }
-  
-  .nav-link:hover {
-    background-color: #f3f4f6;
+    @apply flex items-center space-x-2 px-3 py-2 rounded-md text-gray-600 hover:bg-gray-100 transition-colors;
   }
   
   .nav-link.active {
-    background-color: #ede9fe;
-    color: #7c3aed;
+    @apply bg-blue-50 text-blue-600;
   }
   
-  /* Main Content */
+  .container {
+    @apply max-w-7xl mx-auto px-4;
+  }
+  
   .main {
-    padding: 2rem;
+    @apply py-8;
   }
   
-  /* Home Page */
   .section-title {
-    text-align: center;
-    margin-bottom: 2rem;
+    @apply mb-8 text-center;
   }
   
   .section-title h2 {
-    font-size: 2.5rem;
-    color: #1f2937;
-    margin-bottom: 0.5rem;
+    @apply text-3xl font-bold text-gray-800;
   }
   
   .section-title p {
-    font-size: 1.25rem;
-    color: #6b7280;
+    @apply text-gray-600 mt-2;
   }
   
+  /* Fixed circular dependency by removing @apply grid */
   .grid {
     display: grid;
-    gap: 2rem;
-    margin-top: 3rem;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.5rem;
   }
   
   @media (min-width: 768px) {
     .grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
   
   .card {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    @apply bg-white p-6 rounded-lg shadow-md;
   }
   
   .card h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  /* Profile Section */
-  .profile-image {
-    width: 8rem;
-    height: 8rem;
-    border-radius: 50%;
-    margin: 0 auto 1rem;
-    display: block;
+    @apply text-xl font-semibold mb-4 text-gray-800;
   }
   
   .profile-info {
-    text-align: center;
+    @apply space-y-4;
+  }
+  
+  .profile-image {
+    @apply w-24 h-24 rounded-full mx-auto object-cover;
   }
   
   .profile-name {
-    font-size: 1.25rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
+    @apply text-lg font-medium text-center text-gray-800;
   }
   
   .profile-detail {
-    color: #6b7280;
+    @apply text-gray-600 text-center;
   }
   
-  /* Activity Feed */
   .activity-item {
-    padding: 1rem;
-    background-color: #f9fafb;
-    border-radius: 0.5rem;
-    margin-bottom: 1rem;
+    @apply py-3 border-b border-gray-100 last:border-0;
   }
   
   .activity-title {
-    font-weight: 500;
+    @apply text-gray-800;
   }
   
   .activity-time {
-    font-size: 0.875rem;
-    color: #6b7280;
+    @apply text-sm text-gray-500 mt-1;
   }
   
-  /* Friends Page */
   .friends-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
+    @apply flex justify-between items-center mb-8;
+  }
+  
+  .friends-header h2 {
+    @apply text-2xl font-bold text-gray-800;
   }
   
   .search-input {
-    padding: 0.5rem 1rem 0.5rem 2.5rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    width: 20rem;
+    @apply w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent;
   }
   
   .friends-grid {
-    display: grid;
-    gap: 1.5rem;
-  }
-  
-  @media (min-width: 768px) {
-    .friends-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-  
-  @media (min-width: 1024px) {
-    .friends-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
   }
   
   .friend-card {
-    text-align: center;
+    @apply flex flex-col items-center text-center;
   }
   
   .friend-image {
-    width: 6rem;
-    height: 6rem;
-    border-radius: 50%;
-    margin: 0 auto 1rem;
+    @apply w-32 h-32 rounded-full object-cover mb-4;
   }
   
   .connect-button {
-    background-color: #7c3aed;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    border: none;
-    cursor: pointer;
-    margin-top: 1rem;
-    transition: background-color 0.2s;
+    @apply mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors;
   }
   
-  .connect-button:hover {
-    background-color: #6d28d9;
-  }
-  
-  /* Messages Page */
   .messages-container {
-    background-color: white;
-    border-radius: 1rem;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    height: 600px;
-    display: flex;
+    @apply flex h-[calc(100vh-12rem)] bg-white rounded-lg shadow-md overflow-hidden;
   }
   
   .messages-sidebar {
-    width: 33.333%;
-    border-right: 1px solid #e5e7eb;
+    @apply w-80 border-r border-gray-200;
   }
   
   .messages-header {
-    padding: 1rem;
-    border-bottom: 1px solid #e5e7eb;
+    @apply p-4 border-b border-gray-200;
+  }
+  
+  .messages-header h2 {
+    @apply text-xl font-semibold text-gray-800;
   }
   
   .contact-list {
-    list-style: none;
+    @apply overflow-y-auto h-full;
   }
   
   .contact-item {
-    padding: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .contact-item:hover {
-    background-color: #f9fafb;
+    @apply flex items-center space-x-3 p-4 hover:bg-gray-50 cursor-pointer transition-colors;
   }
   
   .contact-image {
-    width: 3rem;
-    height: 3rem;
-    border-radius: 50%;
+    @apply w-12 h-12 rounded-full object-cover;
   }
   
   .messages-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+    @apply flex-1 flex flex-col;
   }
   
   .message-input {
-    padding: 0.5rem 1rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    width: 100%;
-    margin: 1rem 0;
+    @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent;
   }
   
-  /* Settings Page */
   .settings-container {
-    max-width: 42rem;
-    margin: 0 auto;
+    @apply max-w-2xl mx-auto;
+  }
+  
+  .settings-container h2 {
+    @apply text-2xl font-bold mb-8 text-gray-800;
   }
   
   .settings-section {
-    background-color: white;
-    padding: 1.5rem;
-    border-radius: 1rem;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    margin-bottom: 2rem;
+    @apply space-y-8;
   }
   
   .settings-group {
-    margin-bottom: 1.5rem;
+    @apply bg-white p-6 rounded-lg shadow-md;
   }
   
   .settings-group h3 {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
+    @apply text-xl font-semibold mb-4 text-gray-800;
   }
   
   .settings-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
+    @apply flex justify-between items-center py-3 border-b border-gray-100 last:border-0;
   }
   
   .settings-label {
-    font-size: 1.125rem;
+    @apply text-gray-700;
   }
   
   .settings-select {
-    padding: 0.5rem 1rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
+    @apply px-3 py-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent;
   }
   
   .settings-checkbox {
-    width: 1.5rem;
-    height: 1.5rem;
+    @apply h-5 w-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500;
   }

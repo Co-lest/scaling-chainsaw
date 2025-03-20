@@ -1,10 +1,22 @@
 import http from "http";
-import "dotenv/config"
+import "dotenv/config";
+import { connectDatabase } from "./database/database.js"
 
 const port = process.env.PORT || 5678;
+let connectedtodatabase = false;
 
-const server = http.createServer((req, res) => {
+(async function databaseState() {
+    try {
+        connectedtodatabase = await connectDatabase();
+    } catch (error) {
+        console.error(`Error connecting to database!`);
+    }
+})();
 
+const server = http.createServer(async (req, res) => {
+    if (connectedtodatabase) {
+        
+    }
 });
 
 server.listen(port, () => {
