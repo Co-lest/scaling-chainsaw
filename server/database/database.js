@@ -50,11 +50,12 @@ export async function insertUser(obj) {
 }
 
 export async function loginUser(obj) {
+    console.log(obj);
     try {
-        const results = query(`SELECT name, interests, school, age FROM users where username = ? AND password = ?`, [obj.username, obj.password]);
+        const results = query(`SELECT name, interests, school, age FROM users WHERE username = ? AND password = ?`, [obj.username, obj.password]);
 
         if (results.length > 0) {
-            // console.log(`Fetched ${results} from database!`);
+            console.log(`Fetched ${results} from database!`);
             return results;
           } else {
             console.error(`Error getting the homepage data!`);

@@ -1,6 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback} from 'react';
 import { IoMdHome, IoMdPeople, IoMdChatbubbles, IoMdSettings } from "react-icons/io";
 import { Search, Mail, Lock, User, MapPin, School, Heart } from 'lucide-react';
+
+function useWebSocket() { //url = 'ws://localhost:3333'
+  const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+  const hostname = window.location.hostname;
+  const url = `${protocol}//${hostname}:3333`;
+
+  const websocket = useRef(null);
+  // let sendMessage = useRef(null);
+
+  useEffect(() => {
+    websocket.current = new WebSocket(url);
+
+    websocket.current.onopen = () => {
+      console.log('WebSocket connected');
+    };
+
+    websocket.current.onmessage = (event) => {
+      try {
+        const message = JSON.parse(event.data);
+        console.log('Received:', message);
+        // Handle received data here (e.g., update state, call a function)
+        // Example:
+        // handleReceivedData(message);
+      } catch (error) {
+        console.error('Error parsing message:', error);
+        console.log('Raw Message:', event.data); //log the raw message for debugging.
+      }
+    };
+
+    websocket.current.onclose = () => {
+      console.log('WebSocket disconnected');
+    };
+
+    websocket.current.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    return () => {
+      if (websocket.current) {
+        //websocket.current.close();
+      }
+    };
+  }, [url]);
+
+  const sendMessage = (message) => {
+    if (websocket.current && websocket.current.readyState === WebSocket.OPEN) {
+      console.log(message);
+      websocket.current.send(JSON.stringify(message));
+    } else {
+      console.error('WebSocket not connected or not open.');
+    }
+  };
+
+  return sendMessage; // Return only the sendMessage function.
+}
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -57,12 +112,17 @@ function App() {
 
 function LoginPage({ onLogin, onSwitchToSignup }) {
   const [formData, setFormData] = useState({
+    type: 'log',
     username: '',
     password: ''
   });
 
+  const sendMessage = useWebSocket();
+  // sendMessage()
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    sendMessage(formData);
     onLogin();
   };
 
@@ -77,6 +137,7 @@ function LoginPage({ onLogin, onSwitchToSignup }) {
               <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <input
                 type="text"
+                id='username'
                 required
                 className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter your username"
@@ -91,6 +152,7 @@ function LoginPage({ onLogin, onSwitchToSignup }) {
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <input
                 type="password"
+                id='password'
                 required
                 className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter your password"
@@ -122,6 +184,7 @@ function LoginPage({ onLogin, onSwitchToSignup }) {
 
 function SignupPage({ onSignup, onSwitchToLogin }) {
   const [formData, setFormData] = useState({
+    type: 'sign',
     username: '',
     name: '',
     school: '',
@@ -132,8 +195,11 @@ function SignupPage({ onSignup, onSwitchToLogin }) {
     pictureUrl: ''
   });
 
+  const sendMessage = useWebSocket();
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    sendMessage(formData);
     onSignup();
   };
 
@@ -238,7 +304,6 @@ function SignupPage({ onSignup, onSwitchToLogin }) {
             <div className="mt-1">
               <input
                 type="url"
-                required
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter URL for your profile picture"
                 value={formData.pictureUrl}
@@ -463,5 +528,9 @@ function SettingsPage() {
     </div>
   );
 }
+
+// (() => {
+//   console.log(formData);
+// })();
 
 export default App;
