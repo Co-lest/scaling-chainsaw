@@ -16,6 +16,7 @@
     "react-dom": "^19.0.0",
     "react-icons": "^5.4.0",
     "tailwindcss": "^4.0.14",
+    "websocket": "^1.0.35",
     "ws": "^8.18.1"
   },
   "devDependencies": {

@@ -58,30 +58,29 @@ wss.on("connection", (ws) => {
       } else if (dataReceived.type === "log") {
         loginUser(dataReceived)
         .then((logboool) => {
-          if (logboool) {
+          if (logboool && ws.readyState === ws.OPEN) {
             console.log(`Logbool: ${logboool}`);
-            if (true) {
-                ws.send(JSON.stringify({ IsloggedIn: logboool }));
-            }
+            ws.send(JSON.stringify({ IsloggedIn: logboool }));
           } else {
             console.log(`Username or password does not match: ${logboool}`);
+            console.log(`Or disconnected from the ws client`);
             ws.send(JSON.stringify({ IsloggedIn: logboool }));
           }
         });
       } else if (dataReceived.type === "homepage") {
-        console.log(dataReceived);
-        fetchHomepage(dataReceived).then((userData) => {
-          // console.log(userData[0].name);
-          let profileObj = {};
+        // console.log(dataReceived);
+        // fetchHomepage(dataReceived).then((userData) => {
+        //   // console.log(userData[0].name);
+        //   let profileObj = {};
 
-          profileObj.name = userData[0].name;
-          profileObj.interests = userData[0].interests;
-          profileObj.age = userData[0].age;
-          profileObj.school = userData[0].school;
-          profileObj.type = "homeUserData";
+        //   profileObj.name = userData[0].name;
+        //   profileObj.interests = userData[0].interests;
+        //   profileObj.age = userData[0].age;
+        //   profileObj.school = userData[0].school;
+        //   profileObj.type = "homeUserData";
 
-          ws.send(JSON.stringify(profileObj));
-        });
+        //   ws.send(JSON.stringify(profileObj));
+        //  });
       }
     } else {
       console.error(`Cannot connect to database!`);

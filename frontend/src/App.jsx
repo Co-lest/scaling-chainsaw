@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useRef, useCallback} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { IoMdHome, IoMdPeople, IoMdChatbubbles, IoMdSettings } from "react-icons/io";
-import { Search, Mail, Lock, User, MapPin, School, Heart } from 'lucide-react';
+import { Search, Lock, User, MapPin, School, Heart } from 'lucide-react';
 
-function useWebSocket() { //url = 'ws://localhost:3333'
+let websocket
+
+function useWebSocket(handleReceivedData) { //url = 'ws://localhost:3333'
   const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
   const hostname = window.location.hostname;
   const url = `${protocol}//${hostname}:3333`;
-
-  const websocket = useRef(null);
-  // let sendMessage = useRef(null);
 
   useEffect(() => {
     websocket.current = new WebSocket(url);
@@ -20,10 +19,10 @@ function useWebSocket() { //url = 'ws://localhost:3333'
     websocket.current.onmessage = (event) => {
       try {
         const message = JSON.parse(event.data);
-        console.log('Received:', message);
+        // console.log('Received:', message);
         // Handle received data here (e.g., update state, call a function)
         // Example:
-        // handleReceivedData(message);
+        handleReceivedData(message);
       } catch (error) {
         console.error('Error parsing message:', error);
         console.log('Raw Message:', event.data); //log the raw message for debugging.
@@ -43,11 +42,10 @@ function useWebSocket() { //url = 'ws://localhost:3333'
         //websocket.current.close();
       }
     };
-  }, [url]);
+  }, [url, handleReceivedData]);
 
   const sendMessage = (message) => {
     if (websocket.current && websocket.current.readyState === WebSocket.OPEN) {
-      console.log(message);
       websocket.current.send(JSON.stringify(message));
     } else {
       console.error('WebSocket not connected or not open.');
@@ -58,6 +56,20 @@ function useWebSocket() { //url = 'ws://localhost:3333'
 }
 
 function App() {
+  websocket = useRef(null);
+
+  let handleReceivedData = (message) => {
+    // console.log('Is auth:', message.IsloggedIn);
+    if (message.IsloggedIn) {
+        setIsAuthenticated(true);
+    } else {
+      alert(`Username or wrong password!`);
+      setIsAuthenticated(false);
+    }
+  }  
+
+  let sendMessage = useWebSocket(handleReceivedData);
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [currentPage, setCurrentPage] = useState('home');
@@ -118,7 +130,6 @@ function LoginPage({ onLogin, onSwitchToSignup }) {
   });
 
   const sendMessage = useWebSocket();
-  // sendMessage()
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -349,6 +360,9 @@ function SignupPage({ onSignup, onSwitchToLogin }) {
 }
 
 function HomePage() {
+  //const sendMessage = useWebSocket();
+
+
   return (
     <div>
       <section className="section-title">
@@ -528,9 +542,5 @@ function SettingsPage() {
     </div>
   );
 }
-
-// (() => {
-//   console.log(formData);
-// })();
 
 export default App;

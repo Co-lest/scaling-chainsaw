@@ -1,4 +1,9 @@
+import { Type } from "lucide-react";
+
 export function HomePage() {
+  const sendMessage = useWebSocket();
+
+  sendMessage(JSON.stringify({ type: "" }));
     return (
       <div>
         <section className="section-title">
