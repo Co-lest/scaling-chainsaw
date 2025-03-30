@@ -1,7 +1,7 @@
 import http from "http";
 import "dotenv/config";
 import { WebSocketServer } from "ws";
-import { connectDatabase, fetchHomepage, loginUser, insertUser } from "./database/database.js";
+import { connectDatabase, fetchHomepage, loginUser, insertUser, friendsPage } from "./database/database.js";
 
 const port = process.env.PORT || 5678;
 let connectedtodatabase = false;
@@ -38,20 +38,17 @@ wss.on("connection", (ws) => {
     if (connectedtodatabase) {
       if (dataReceived.type === "sign") {
         insertUser(dataReceived)
-        .then(() => {
-            let doesUserExist;
-          (async () => {
-            doesUserExist = await insertUser(dataReceived);
-          })();
+        .then((insertResult) => {
+            console.log(insertResult);
 
-          if (doesUserExist) {
-            console.log(`Username already taken!`);
-            if (ws.readyState === WebSocket.OPEN) {
-                ws.send({type: "doesUserExist", bool: doesUserExist});
+          if (!insertResult) {
+            // console.log(`Username already taken!`);
+            if (ws.readyState === ws.OPEN) {
+                ws.send(insertResult);
             }
           } else {
-            if (ws.readyState === WebSocket.OPEN) {
-                ws.send({type: "doesUserExist", bool: doesUserExist});
+            if (ws.readyState === ws.OPEN) {
+                ws.send(insertResult);
             }
           }
         })
@@ -60,11 +57,11 @@ wss.on("connection", (ws) => {
         .then((logboool) => {
           if (logboool && ws.readyState === ws.OPEN) {
             console.log(`Logbool: ${logboool}`);
-            ws.send(JSON.stringify({ IsloggedIn: logboool }));
+            ws.send(JSON.stringify(logboool));
           } else {
             console.log(`Username or password does not match: ${logboool}`);
             console.log(`Or disconnected from the ws client`);
-            ws.send(JSON.stringify({ IsloggedIn: logboool }));
+            ws.send(JSON.stringify(logboool));
           }
         });
       } else if (dataReceived.type === "homepage") {
@@ -81,6 +78,8 @@ wss.on("connection", (ws) => {
 
         //   ws.send(JSON.stringify(profileObj));
         //  });
+      } else if (dataReceived.type === "friendsPage") {
+        //console.log(`Data received from friends page: ${dataReceived}`);
       }
     } else {
       console.error(`Cannot connect to database!`);

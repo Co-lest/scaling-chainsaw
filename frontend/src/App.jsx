@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { IoMdHome, IoMdPeople, IoMdChatbubbles, IoMdSettings } from "react-icons/io";
 import { Search, Lock, User, MapPin, School, Heart } from 'lucide-react';
 
-let websocket
+let websocket;
 
 function useWebSocket(handleReceivedData) { //url = 'ws://localhost:3333'
   const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
@@ -57,26 +57,31 @@ function useWebSocket(handleReceivedData) { //url = 'ws://localhost:3333'
 
 function App() {
   websocket = useRef(null);
+  const [messageContent, setMessageContent] = useState(null);
 
-  let handleReceivedData = (message) => {
-    // console.log('Is auth:', message.IsloggedIn);
-    if (message.IsloggedIn) {
-        setIsAuthenticated(true);
+  const handleReceivedData = (message) => {
+    if (message) {
+      setIsAuthenticated(true);
+      setMessageContent(message);
     } else {
-      alert(`Username or wrong password!`);
+      alert(`Wrong username or password!`);
       setIsAuthenticated(false);
     }
-  }  
+  };
 
-  let sendMessage = useWebSocket(handleReceivedData);
+  const sendMessage = useWebSocket(handleReceivedData);
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [currentPage, setCurrentPage] = useState('home');
 
+  useEffect(() => {
+    console.log("messageContent changed:", messageContent);
+  }, [messageContent]);
+
   if (!isAuthenticated) {
     return isLogin ? (
-      <LoginPage 
+      <LoginPage
         onLogin={() => setIsAuthenticated(true)}
         onSwitchToSignup={() => setIsLogin(false)}
       />
@@ -113,10 +118,17 @@ function App() {
       </nav>
 
       <main className="main container">
-        {currentPage === 'home' && <HomePage />}
-        {currentPage === 'friends' && <FriendsPage />}
-        {currentPage === 'messages' && <MessagesPage />}
-        {currentPage === 'settings' && <SettingsPage />}
+        {/* Conditional rendering for messageContent */}
+        {messageContent ? (
+          <>
+            {currentPage === 'home' && <HomePage userData={messageContent} />}
+            {currentPage === 'friends' && <FriendsPage userData={messageContent} />}
+            {currentPage === 'messages' && <MessagesPage userData={messageContent} />}
+            {currentPage === 'settings' && <SettingsPage userData={messageContent} />}
+          </>
+        ) : (
+          <p>Loading user data...</p> // Or a loading spinner
+        )}
       </main>
     </div>
   );
@@ -126,13 +138,17 @@ function LoginPage({ onLogin, onSwitchToSignup }) {
   const [formData, setFormData] = useState({
     type: 'log',
     username: '',
-    password: ''
+    password: '',
   });
 
   const sendMessage = useWebSocket();
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (formData.username === "" && formData.password === "") {
+      console.error("Form is empty!");
+      return;
+    }
     sendMessage(formData);
     onLogin();
   };
@@ -193,7 +209,7 @@ function LoginPage({ onLogin, onSwitchToSignup }) {
   );
 }
 
-function SignupPage({ onSignup, onSwitchToLogin }) {
+function SignupPage({ onSignup, onSwitchToLogin}) {
   const [formData, setFormData] = useState({
     type: 'sign',
     username: '',
@@ -204,16 +220,22 @@ function SignupPage({ onSignup, onSwitchToLogin }) {
     interests: '',
     password: '',
     pictureUrl: ''
-  });
+  });data
 
   const sendMessage = useWebSocket();
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Object.values(formData).forEach((value) => {
+    //   if (value === "") {
+    //     console.error("Some fields are empty!");
+    //     return;
+    //   }
+    // });
     sendMessage(formData);
     onSignup();
   };
-
+  data
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
@@ -359,8 +381,11 @@ function SignupPage({ onSignup, onSwitchToLogin }) {
   );
 }
 
-function HomePage() {
-  //const sendMessage = useWebSocket();
+function HomePage(userData) {
+  //const sendMessage = useWebSocket(handleReceivedData);
+  // const [data, setData] = useState(undefined);
+  // setData(userData);
+  console.log(userData);
 
 
   return (
@@ -379,9 +404,11 @@ function HomePage() {
               alt="Profile"
               className="profile-image"
             />
-            <p className="profile-name">Sarah Johnson</p>
-            <p className="profile-detail">Age: 68</p>
-            <p className="profile-detail">Hometown: Springfield, IL</p>
+            <p className='profile-name'>{userData.userData.username}</p>
+            <p className="profile-name">Name: {userData.userData.name}</p>
+            <p className="profile-detail">Age: {userData.userData.age}</p>
+            <p className="profile-detail">Interests: {userData.userData.interests}</p>
+            <p className='profile-detail'>{userData.userData.hometown}</p>
           </div>
         </div>
 
@@ -403,7 +430,24 @@ function HomePage() {
   );
 }
 
-function FriendsPage() {
+function FriendsPage(userData) {
+  let friendsObj = {
+    type: "friendsPage",
+    name: userData.userData.name,
+    hometown: userData.userData.hometown,
+    age: userData.userData.age,
+    interests: userData.userData.interests,
+    school: userData.userData.school,
+    username: userData.userData.username
+  }
+
+  let handleReceivedData = (message) => {
+    console.log(message);
+  }  
+
+  const sendMessage = useWebSocket(handleReceivedData);
+  sendMessage(friendsObj);
+
   return (
     <div>
       <div className="friends-header">
@@ -426,7 +470,7 @@ function FriendsPage() {
               alt="Friend"
               className="friend-image"
             />
-            <p className="profile-name">John Doe</p>
+            <p className="profile-name">{friendsObj.name}</p>
             <p className="profile-detail">Age: 70</p>
             <p className="profile-detail">Hometown: Chicago, IL</p>
             <p className="profile-detail">Interests: Gardening, Reading</p>
