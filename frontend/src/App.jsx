@@ -4,7 +4,7 @@ import { Search, Lock, User, MapPin, School, Heart } from 'lucide-react';
 
 let websocket;
 
-function useWebSocket(handleReceivedData) { //url = 'ws://localhost:3333'
+function useWebSocket(handleReceivedData, handleReceivedDataFriends) { //url = 'ws://localhost:3333'
   const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
   const hostname = window.location.hostname;
   const url = `${protocol}//${hostname}:3333`;
@@ -19,10 +19,11 @@ function useWebSocket(handleReceivedData) { //url = 'ws://localhost:3333'
     websocket.current.onmessage = (event) => {
       try {
         const message = JSON.parse(event.data);
-        // console.log('Received:', message);
-        // Handle received data here (e.g., update state, call a function)
-        // Example:
-        handleReceivedData(message);
+        if (message.type === "friends") { // handle message going to friends page and app component
+          handleReceivedDataFriends(message);
+        } else {
+          handleReceivedData(message);
+        }
       } catch (error) {
         console.error('Error parsing message:', error);
         console.log('Raw Message:', event.data); //log the raw message for debugging.
@@ -42,7 +43,7 @@ function useWebSocket(handleReceivedData) { //url = 'ws://localhost:3333'
         //websocket.current.close();
       }
     };
-  }, [url, handleReceivedData]);
+  }, [url, handleReceivedData, handleReceivedDataFriends]);
 
   const sendMessage = (message) => {
     if (websocket.current && websocket.current.readyState === WebSocket.OPEN) {
@@ -69,7 +70,13 @@ function App() {
     }
   };
 
-  const sendMessage = useWebSocket(handleReceivedData);
+  const handleReceivedDataFriends = (message) => {
+    if (message.type === "friends") {
+      console.log("Received friends data:", message);
+    }
+  };
+
+  useWebSocket(handleReceivedData, handleReceivedDataFriends);
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
@@ -122,7 +129,7 @@ function App() {
         {messageContent ? (
           <>
             {currentPage === 'home' && <HomePage userData={messageContent} />}
-            {currentPage === 'friends' && <FriendsPage userData={messageContent} />}
+            {currentPage === 'friends' && <FriendsPage userData={messageContent} handleReceivedDataFriends={handleReceivedDataFriends} handleReceivedData={handleReceivedDatad}/>}
             {currentPage === 'messages' && <MessagesPage userData={messageContent} />}
             {currentPage === 'settings' && <SettingsPage userData={messageContent} />}
           </>
@@ -382,12 +389,6 @@ function SignupPage({ onSignup, onSwitchToLogin}) {
 }
 
 function HomePage(userData) {
-  //const sendMessage = useWebSocket(handleReceivedData);
-  // const [data, setData] = useState(undefined);
-  // setData(userData);
-  console.log(userData);
-
-
   return (
     <div>
       <section className="section-title">
@@ -430,36 +431,69 @@ function HomePage(userData) {
   );
 }
 
-function FriendsPage(userData) {
-  let friendsObj = {
-    type: "friendsPage",
-    name: userData.userData.name,
-    hometown: userData.userData.hometown,
-    age: userData.userData.age,
-    interests: userData.userData.interests,
-    school: userData.userData.school,
-    username: userData.userData.username
+function FriendsPage({ userData, handleReceivedDataFriends, handleReceivedData }) {
+  const [friendsPageStart, setfriendsPageStart] = useState({
+    type: "friendsPageStart",
+    content: userData.userData
+  });
+
+  const [friendList, setFriendsList] = useState([]);
+
+
+  useEffect(() => {
+    const localHandleReceivedDataFriends = (message) => {
+      if (message.type === "friends") {
+        setFriendsList(message);
+        console.log(friendList);
+      }
+    };
+    
+    // Pass the local handler to the parent handler
+    handleReceivedDataFriends = localHandleReceivedDataFriends;
+  }, [handleReceivedDataFriends]);
+
+  const sendMessage = useWebSocket(handleReceivedData, handleReceivedDataFriends);
+
+  useEffect(() => {
+    sendMessage({
+      type: "friendsPageStart",
+      content: userData
+    });
+  }, [userData, sendMessage]);
+
+  const [friendsPageSearch, setfriendsPageSearch] = useState({
+    type: "friendsPageSearch",
+    searchItem: "", 
+  });
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (friendsPageSearch.searchItem) {
+      sendMessage(friendsPageSearch);
+    } else {
+      alert("The search field is empty");
+      return;
+    }
+    e.target.value = "";
   }
-
-  let handleReceivedData = (message) => {
-    console.log(message);
-  }  
-
-  const sendMessage = useWebSocket(handleReceivedData);
-  sendMessage(friendsObj);
 
   return (
     <div>
       <div className="friends-header">
         <h2>Find Friends</h2>
+        <form onSubmit={handleSubmit} >
         <div style={{ position: 'relative' }}>
           <input
             type="text"
             placeholder="Search by name or hometown..."
             className="search-input"
+            value={friendsPageSearch.searchItem}
+            onChange={(e) => setfriendsPageSearch({ ...friendsPageSearch, searchItem: e.target.value })}
           />
-          <Search style={{ position: 'absolute', left: '12px', top: '10px', color: '#9ca3af' }} size={20} />
+          <Search style={{ position: 'absolute', left: '12px', top: '10px', color: '#9ca3af',margonTop: "1px" }} size={20} />
+          <button type='submit' className='connect-button'>Search</button>
         </div>
+        </form>
       </div>
 
       <div className="friends-grid">
@@ -470,7 +504,7 @@ function FriendsPage(userData) {
               alt="Friend"
               className="friend-image"
             />
-            <p className="profile-name">{friendsObj.name}</p>
+            <p className="profile-name">Name: Mark Tom</p>
             <p className="profile-detail">Age: 70</p>
             <p className="profile-detail">Hometown: Chicago, IL</p>
             <p className="profile-detail">Interests: Gardening, Reading</p>

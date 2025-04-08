@@ -1,6 +1,8 @@
 import mysql from "mysql";
 import { promisify } from "util";
 
+//change age to be string
+
 let connectedToDatabase;
 
 const connection = mysql.createConnection ({
@@ -51,7 +53,7 @@ export async function insertUser(obj) {
 
 export async function loginUser(obj) {
     try {
-        const results = await query(`SELECT name, interests, school, age FROM users WHERE username = ? AND password = ?`, [obj.username, obj.password]);
+        const results = await query(`SELECT name, username, interests, school, hometown, age FROM users WHERE username = ? AND password = ?`, [obj.username, obj.password]);
         if (results.length > 0) {
             console.log(`Fetched ${results} from database!`);
             return results[0];
@@ -73,7 +75,7 @@ export async function fetchHomepage(obj) {
   
       if (results.length > 0) {
         // console.log(`Fetched ${results} from database!`);
-        return results;
+        return results[0];
       } else {
         console.error(`Error getting the homepage data!`);
         return 0;
@@ -87,14 +89,23 @@ export async function fetchHomepage(obj) {
   export async function friendsPage(obj) {
     try {
         //const results = await query(`SELECT * from`); // select a whole row which has the said attribute in the incoming obect
-        if (results.length > 0) {
-            return results;
-        } else {
-            console.error(`Error getting the friends page!`);
-            return 0
+        if (obj.type === "friendsPageSearch") {
+            const results = await query(`SELECT username, name, hometown, age, interests, school FROM users where name = ?`, [obj.searchItem]); // OR age = ? OR school = ? OR interests = ?
+            if (results.length > 0) {
+                return results;
+            }
+            return 0;
+        } else { //friendsPageStart
+            const results = await query(`SELECT username, name, hometown, age, interests, school FROM users where name = ?`, [obj.content.name]); // OR age = ? OR school = ? OR interests = ?
+            if (results.length > 0) {
+                return results[0];
+            }
+            console.error(`Errorfetching the friendsPageStart `);
+            return 0;
         }
     } catch (error) {
-        
+        conseole.error(`Error fetching the friends data!`);
+        throw error;
     }
   }
   

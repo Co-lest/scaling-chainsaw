@@ -56,7 +56,6 @@ wss.on("connection", (ws) => {
         loginUser(dataReceived)
         .then((logboool) => {
           if (logboool && ws.readyState === ws.OPEN) {
-            console.log(`Logbool: ${logboool}`);
             ws.send(JSON.stringify(logboool));
           } else {
             console.log(`Username or password does not match: ${logboool}`);
@@ -80,6 +79,17 @@ wss.on("connection", (ws) => {
         //  });
       } else if (dataReceived.type === "friendsPage") {
         //console.log(`Data received from friends page: ${dataReceived}`);
+      } else if(dataReceived.type === "friendsPageSearch" || dataReceived.type === "friendsPageStart") {
+        friendsPage(dataReceived)
+        .then((friendsFound) => {
+          if (typeof friendsFound === "object" && ws.readyState === ws.OPEN) {
+            friendsFound.type = "friends";
+            ws.send(JSON.stringify(friendsFound));
+          } else {
+            console.log(`No friends found or ws disconnected!`);
+            //ws.send(JSON.stringify(friendsFound));
+          }
+        })
       }
     } else {
       console.error(`Cannot connect to database!`);
@@ -97,5 +107,5 @@ wss.on("connection", (ws) => {
 });
 
 server.listen(port, () => {
-  console.log(`Server.listening on port: ${port}`);
+  console.log(`Server listening on port: ${port}`);
 });
