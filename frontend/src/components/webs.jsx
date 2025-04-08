@@ -1,53 +1,60 @@
-  const [messages, setMessages] = useState<string>([]);
-  const[inputMessage, setInputMessage] = useState("");
-  const [connectionStatus, setConnectiobnStatus] = useState(`Disconnected`);
-  const wsRef = useRef<WebSocket | null>(null);
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+const WebSocketContext = createContext(null);
 
-  const connectWebsocket = useCallback(() => {
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const hostname = window.location.hostname;
-    const wsUrl = `${protocol}//${hostname}:3333`;
+export const WebsocketProvider = ({children}) => {
+  const [isConnected, setIsConnected] = useState(false);
+  const [message, setMessage] = useState("null");
 
-    const ws =  new WebSocket(wsUrl);
+  const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+  const port = 3333;
 
-    ws.onopen = () => {
-      setConnectiobnStatus("Connected");
-      console.log(`Connected to ws server!`)
-    }
-
-    ws.onmessage = (event) => {
-      setMessages((prev) => [...prev, `received: ${event.data}`]);
-      console.log(event.data);
-    } 
-
-    ws.onclose = () => {
-      setConnectiobnStatus("Disconnected");
-      console.log("Disconnected rfom ws server!");
-      setTimeout(connectWebsocket, 3000);
-    }
-
-    ws.onerror = (error) => {
-      console.error(`Ws error!`, error);
-      setConnectiobnStatus(`Error connecting`);
-    }
-
-    wsRef.current = ws;
-  }, []);
+  const ws = useRef(null);
 
   useEffect(() => {
-    connectWebsocket();
+    ws.current = new WebSocket(`${protocol}//localhost:${port}`);
+
+    ws.current.onopen = () => {
+      console.log(`WS connected!`);
+      setIsConnected(true);
+    }
+
+    ws.current.onmessage = (data) => {
+      setMessage(JSON.parse(data));
+      console.log(message);
+    }
+
+    ws.current.onclose = () => {
+      console.log(`WS disconnected!`);
+      setIsConnected(false);
+    }
+
+    ws.current.onerror = (error) => {
+      console.error(`Error loading connecting the ws: ${error}`);
+      isConnected(false);
+    }
 
     return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
+      if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+        ws.current.close(); // disconnects when the component unmounts
       }
     }
-  }, [connectWebsocket]);
+  }, []);
 
-  const sendMessage = useCallback(() => {
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN && inputMessage) {
-      wsRef.current.send(JSON.stringify(inputMessage));
-      setMessages((prev) => [...prev, `Sent: ${inputMessage}`]);
-      setInputMessage("");
+  const sendMessage = (message) => {
+    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+      ws.current.send(JSON.stringify(message));
+    } else {
+      console.error('WebSocket connection is not open.');
     }
-  }, [inputMessage])
+  };
+
+  return (
+    <WebSocketContext.Provider value={{ message, sendMessage, isConnected }}>
+      {children}
+    </WebSocketContext.Provider>
+  );
+}
+
+export const useWebSocket = () => {
+  return useContext(WebSocketContext);
+};

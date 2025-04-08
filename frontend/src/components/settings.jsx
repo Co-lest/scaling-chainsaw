@@ -2,7 +2,7 @@ export function SettingsPage() {
   return (
     <div className="settings-container">
       <h2>Settings</h2>
-
+      
       <div className="settings-section">
         <div className="settings-group">
           <h3>Accessibility</h3>
@@ -27,19 +27,11 @@ export function SettingsPage() {
           <div>
             <div className="settings-row">
               <label className="settings-label">Email Notifications</label>
-              <input
-                type="checkbox"
-                className="settings-checkbox"
-                defaultChecked
-              />
+              <input type="checkbox" className="settings-checkbox" defaultChecked />
             </div>
             <div className="settings-row">
               <label className="settings-label">Message Alerts</label>
-              <input
-                type="checkbox"
-                className="settings-checkbox"
-                defaultChecked
-              />
+              <input type="checkbox" className="settings-checkbox" defaultChecked />
             </div>
           </div>
         </div>

@@ -60,23 +60,11 @@ wss.on("connection", (ws) => {
           } else {
             console.log(`Username or password does not match: ${logboool}`);
             console.log(`Or disconnected from the ws client`);
-            ws.send(JSON.stringify(logboool));
+            ws.send(JSON.stringify({content: logboool }));
           }
         });
-      } else if (dataReceived.type === "homepage") {
-        // console.log(dataReceived);
-        // fetchHomepage(dataReceived).then((userData) => {
-        //   // console.log(userData[0].name);
-        //   let profileObj = {};
-
-        //   profileObj.name = userData[0].name;
-        //   profileObj.interests = userData[0].interests;
-        //   profileObj.age = userData[0].age;
-        //   profileObj.school = userData[0].school;
-        //   profileObj.type = "homeUserData";
-
-        //   ws.send(JSON.stringify(profileObj));
-        //  });
+      } else if (dataReceived.type === "message") {
+        console.log(`Received: ${dataReceived}`);
       } else if (dataReceived.type === "friendsPage") {
         //console.log(`Data received from friends page: ${dataReceived}`);
       } else if(dataReceived.type === "friendsPageSearch" || dataReceived.type === "friendsPageStart") {

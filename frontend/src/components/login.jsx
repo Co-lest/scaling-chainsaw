@@ -1,24 +1,37 @@
-import React, {useState} from "react";
-import { User } from "lucide-react"
+import { useState, useEffect } from "react";
+import { User, Lock } from "lucide-react";
+import { useWebSocket } from "./webs";
 
-function LoginPage({ onLogin, onSwitchToSignup }) {
+export function LoginPage({ onLogin, onSwitchToSignup }) {
+  const { message, sendMessage, isConnected } = useWebSocket();
   const [formData, setFormData] = useState({
+    type: 'log',
     username: '',
-    password: ''
+    password: '',
   });
 
-  const handleChange = (e) => {
-    const {name, value} = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]:value
-    }));
-  }
+  //const sendMessage = useWebSocket();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
-    onLogin();
+    if (formData.username.trim() === "" && formData.password.trim() === "") {
+      console.error("Form is empty!");
+      return;
+    }
+    if (isConnected) {
+      sendMessage(formData);
+    } else {
+      console.error(`Websocket is not connected!`);
+    }
+
+    useEffect(() => {
+      if (message.content) {
+        console.log('Login successful based on WebSocket message:', message);
+        onLogin();
+      } else {
+        console.error('Login failed:');
+      }
+    }, [message, onLogin]);
   };
 
   return (
@@ -59,6 +72,7 @@ function LoginPage({ onLogin, onSwitchToSignup }) {
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            disabled={!isConnected}
           >
             Sign In
           </button>
@@ -76,5 +90,3 @@ function LoginPage({ onLogin, onSwitchToSignup }) {
     </div>
   );
 }
-
-export default LoginPage;
