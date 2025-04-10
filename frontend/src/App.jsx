@@ -1,3 +1,4 @@
+import { WebsocketProvider } from './components/webs.jsx'; 
 import { useState } from 'react';
 import { IoMdHome, IoMdPeople, IoMdChatbubbles, IoMdSettings } from "react-icons/io";
 import { LoginPage } from "./components/login.jsx";
@@ -6,8 +7,6 @@ import { HomePage } from './components/home.jsx';
 import { FriendsPage } from './components/friends.jsx';
 import { SettingsPage } from './components/settings.jsx';
 import { MessagesPage } from './components/messages.jsx';
-import { useWebSocket, WebsocketProvider } from './components/webs.jsx'; 
-import React from 'react';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -58,7 +57,9 @@ function App() {
 
       <main className="main container">
           <>
+          <WebsocketProvider>
             {currentPage === 'home' && <HomePage />}
+          </WebsocketProvider>
             {currentPage === 'friends' && <FriendsPage/>}
             {currentPage === 'messages' && <MessagesPage/>}
             {currentPage === 'settings' && <SettingsPage/>}

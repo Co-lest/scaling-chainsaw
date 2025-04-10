@@ -39,28 +39,23 @@ wss.on("connection", (ws) => {
       if (dataReceived.type === "sign") {
         insertUser(dataReceived)
         .then((insertResult) => {
-            console.log(insertResult);
-
-          if (!insertResult) {
-            // console.log(`Username already taken!`);
-            if (ws.readyState === ws.OPEN) {
-                ws.send(insertResult);
-            }
-          } else {
-            if (ws.readyState === ws.OPEN) {
-                ws.send(insertResult);
-            }
+          let sendObj = {};
+          sendObj.type = "sign";
+          sendObj.content = insertResult;
+          console.log(sendObj);
+          if (ws.readyState === ws.OPEN) {
+              ws.send(JSON.stringify(sendObj));
           }
         })
       } else if (dataReceived.type === "log") {
         loginUser(dataReceived)
-        .then((logboool) => {
-          if (logboool && ws.readyState === ws.OPEN) {
-            ws.send(JSON.stringify(logboool));
+        .then((logbool) => {
+          if (logbool && ws.readyState === ws.OPEN) {
+            ws.send(JSON.stringify({ logbool }));
           } else {
-            console.log(`Username or password does not match: ${logboool}`);
+            console.log(`Username or password does not match: ${logbool}`);
             console.log(`Or disconnected from the ws client`);
-            ws.send(JSON.stringify({content: logboool }));
+            ws.send(JSON.stringify({ logbool }));
           }
         });
       } else if (dataReceived.type === "message") {

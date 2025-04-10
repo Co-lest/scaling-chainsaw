@@ -4,13 +4,24 @@ import { useWebSocket } from "./webs";
 
 export function LoginPage({ onLogin, onSwitchToSignup }) {
   const { message, sendMessage, isConnected } = useWebSocket();
+
+  // const [isFormFilled, setIsFormFilled] = useState(false); make a button unclicakble if the form isnt filled
   const [formData, setFormData] = useState({
     type: 'log',
     username: '',
     password: '',
   });
 
-  //const sendMessage = useWebSocket();
+  useEffect(() => {
+    if (message && message.logbool !== null) {
+      console.log(message);
+      if (message.logbool) {
+        onLogin();
+      } else {
+        alert(`Check the username or password!`);
+      }
+    }
+  }, [message, onLogin]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,15 +34,6 @@ export function LoginPage({ onLogin, onSwitchToSignup }) {
     } else {
       console.error(`Websocket is not connected!`);
     }
-
-    useEffect(() => {
-      if (message.content) {
-        console.log('Login successful based on WebSocket message:', message);
-        onLogin();
-      } else {
-        console.error('Login failed:');
-      }
-    }, [message, onLogin]);
   };
 
   return (

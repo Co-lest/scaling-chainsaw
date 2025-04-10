@@ -1,6 +1,45 @@
-import { Type } from "lucide-react";
+import { useWebSocket } from "./webs";
+import { useEffect, useState } from "react";
 
 export function HomePage() {
+  const { message, sendMessage, isConnected } = useWebSocket();
+  const [isLoading, setIsLoading] = useState(true);
+  const [userdata , setUserData] = useState(null);
+    // const mock = {
+    //   username: "johndoe",
+    //   name: "John Doe",
+    //   age: 28,
+    //   interests: "Hiking, Reading",
+    //   hometown: "Seattle"
+    // };
+    // setUserData(mock);
+    // setIsLoading(false);
+
+  useEffect(() => {
+    if (!message){
+      console.log(message);
+      return;
+    }
+  
+    console.log("Received WebSocket message:", message); // does not log 
+  
+    const userDataFromMessage = message.logbool || message.content;
+  
+    if (userDataFromMessage) {
+      setUserData(userDataFromMessage);
+      setIsLoading(false);
+    }
+  }, [message, isConnected]);
+
+  if (isLoading) {
+    return (
+      <section className="section-title">
+        <h2>Welcome to FriendlyConnect</h2>
+        <p>Loading profile information...</p>
+      </section>
+    );
+  }
+
   return (
     <div>
       <section className="section-title">
@@ -17,11 +56,11 @@ export function HomePage() {
               alt="Profile"
               className="profile-image"
             />
-            <p className='profile-name'>Colest_</p>
-            <p className="profile-name">Name: Mark</p>
-            <p className="profile-detail">Age: Tom</p>
-            <p className="profile-detail">Interests: Women</p>
-            <p className='profile-detail'>Hometown: Eld</p>
+            <p className='profile-name'>{userdata?.username || 'N/A'}</p>
+            <p className="profile-name">{userdata?.name || 'N/A'}</p>
+            <p className="profile-detail">{userdata?.age || 'N/A'}</p>
+            <p className="profile-detail">{userdata?.interests || 'N/A'}</p>
+            <p className='profile-detail'>{userdata?.hometown || 'N/A'}</p>
           </div>
         </div>
 
@@ -42,3 +81,23 @@ export function HomePage() {
     </div>
   );
 }
+/*
+
+            {message ? (
+              <>
+                <img
+                  src="https://images.unsplash.com/photo-1505944270255-72b8c68c6a70?auto=format&fit=crop&q=80"
+                  alt="Profile"
+                  className="profile-image"
+                />
+                <p className='profile-name'>{message.logbool?.username || message.content?.username || 'N/A'}</p>
+                <p className="profile-name">{message.logbool?.name || message.content?.name || 'N/A'}</p>
+                <p className="profile-detail">{message.logbool?.age || message.content?.age || 'N/A'}</p>
+                <p className="profile-detail">{message.logbool?.interests || message.content?.interests || 'N/A'}</p>
+                <p className='profile-detail'>{message.logbool?.hometown || message.content?.hometown || 'N/A'}</p>
+              </>
+            ) : (
+              <p>Loading user data</p>
+            )}
+
+*/

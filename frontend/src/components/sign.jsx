@@ -16,6 +16,15 @@ export function SignupPage({ onSignup, onSwitchToLogin}) {
     pictureUrl: ''
   });
 
+  useEffect(() => {
+    if (message && message.content !== null) {
+      if (message.content) {
+        onSignup();
+      } else {
+        alert(`Username is already taken! try another one.`);
+      }
+    }
+  }, [message, onSignup])
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,19 +32,13 @@ export function SignupPage({ onSignup, onSwitchToLogin}) {
     //   if (value.trim() === "") {
     //     console.error("Some fields are empty!");
     //     return;
-    //   } else if (value)
+    //   } else if (value) {
+    //   }
     // });
     if (isConnected) {
       sendMessage(formData);
     } else {
       console.error(`Ws is not connected!`);
-    }
-
-    if (message) {
-      onSignup();
-    } else {
-      alert(`Username already taken!`);
-      return;
     }
   };
   return (

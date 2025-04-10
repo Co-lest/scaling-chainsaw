@@ -3,7 +3,7 @@ const WebSocketContext = createContext(null);
 
 export const WebsocketProvider = ({children}) => {
   const [isConnected, setIsConnected] = useState(false);
-  const [message, setMessage] = useState("null");
+  const [message, setMessage] = useState(null);
 
   const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
   const port = 3333;
@@ -19,7 +19,7 @@ export const WebsocketProvider = ({children}) => {
     }
 
     ws.current.onmessage = (data) => {
-      setMessage(JSON.parse(data));
+      setMessage(JSON.parse(data.data));  // log - { logbool: {data} } , sign - {type: "sign", content:data or false } 
       console.log(message);
     }
 
@@ -40,9 +40,9 @@ export const WebsocketProvider = ({children}) => {
     }
   }, []);
 
-  const sendMessage = (message) => {
+  const sendMessage = (msg) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      ws.current.send(JSON.stringify(message));
+      ws.current.send(JSON.stringify(msg));
     } else {
       console.error('WebSocket connection is not open.');
     }
