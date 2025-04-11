@@ -7,25 +7,13 @@ export function HomePage() {
   const [userdata, setUserData] = useState(null);
 
   useEffect(() => {
-    const timestamp = new Date().toISOString();
-    console.log(`[${timestamp}] WebSocket Debug:`);
-    console.log('Connection status:', isConnected);
-    console.log('Message type:', typeof message);
-    console.log('Raw message:', message);
-    console.log('Current state:', { isLoading, userdata });
-
-    if (!message) {
-      console.log('Message is null/undefined - waiting for data...');
-      return;
-    }
+    console.log("Received WebSocket message:", message); // logs out null
   
-    console.log("Received WebSocket message:", message); // does not log 
-  
-    const userDataFromMessage = message.logbool || message.content;
-  
-    if (userDataFromMessage) {
+    if (message.logbool || message.content) {
       setUserData(userDataFromMessage);
       setIsLoading(false);
+    } else {
+      sendMessage(JSON.stringify({ content: "Issue with message!" }));
     }
   }, [message, isConnected]);
 

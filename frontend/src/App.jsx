@@ -1,5 +1,5 @@
-import { WebsocketProvider } from './components/webs.jsx'; 
-import { useState } from 'react';
+import { useWebSocket, WebsocketProvider } from './components/webs.jsx'; 
+import { useEffect, useState } from 'react';
 import { IoMdHome, IoMdPeople, IoMdChatbubbles, IoMdSettings } from "react-icons/io";
 import { LoginPage } from "./components/login.jsx";
 import { SignupPage } from './components/sign.jsx';
@@ -58,11 +58,11 @@ function App() {
       <main className="main container">
           <>
           <WebsocketProvider>
-            {currentPage === 'home' && <HomePage />}
-          </WebsocketProvider>
+            {currentPage === 'home' && <HomePage/>}
             {currentPage === 'friends' && <FriendsPage/>}
             {currentPage === 'messages' && <MessagesPage/>}
             {currentPage === 'settings' && <SettingsPage/>}
+          </WebsocketProvider>
           </>
       </main>
     </div>
