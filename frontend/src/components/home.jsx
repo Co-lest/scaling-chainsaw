@@ -4,20 +4,18 @@ import { useEffect, useState } from "react";
 export function HomePage() {
   const { message, sendMessage, isConnected } = useWebSocket();
   const [isLoading, setIsLoading] = useState(true);
-  const [userdata , setUserData] = useState(null);
-    // const mock = {
-    //   username: "johndoe",
-    //   name: "John Doe",
-    //   age: 28,
-    //   interests: "Hiking, Reading",
-    //   hometown: "Seattle"
-    // };
-    // setUserData(mock);
-    // setIsLoading(false);
+  const [userdata, setUserData] = useState(null);
 
   useEffect(() => {
-    if (!message){
-      console.log(message);
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] WebSocket Debug:`);
+    console.log('Connection status:', isConnected);
+    console.log('Message type:', typeof message);
+    console.log('Raw message:', message);
+    console.log('Current state:', { isLoading, userdata });
+
+    if (!message) {
+      console.log('Message is null/undefined - waiting for data...');
       return;
     }
   
@@ -36,6 +34,9 @@ export function HomePage() {
       <section className="section-title">
         <h2>Welcome to FriendlyConnect</h2>
         <p>Loading profile information...</p>
+        <p className="connection-status">
+          Connection Status: {isConnected ? 'Connected' : 'Disconnected'}
+        </p>
       </section>
     );
   }
@@ -45,6 +46,9 @@ export function HomePage() {
       <section className="section-title">
         <h2>Welcome to FriendlyConnect</h2>
         <p>Reconnect with old friends and make new ones!</p>
+        <p className="connection-status">
+          Connection Status: {isConnected ? 'Connected' : 'Disconnected'}
+        </p>
       </section>
 
       <div className="grid">
@@ -58,9 +62,9 @@ export function HomePage() {
             />
             <p className='profile-name'>{userdata?.username || 'N/A'}</p>
             <p className="profile-name">{userdata?.name || 'N/A'}</p>
-            <p className="profile-detail">{userdata?.age || 'N/A'}</p>
-            <p className="profile-detail">{userdata?.interests || 'N/A'}</p>
-            <p className='profile-detail'>{userdata?.hometown || 'N/A'}</p>
+            <p className="profile-detail">Age: {userdata?.age || 'N/A'}</p>
+            <p className="profile-detail">Interests: {userdata?.interests || 'N/A'}</p>
+            <p className='profile-detail'>Hometown: {userdata?.hometown || 'N/A'}</p>
           </div>
         </div>
 
