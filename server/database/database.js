@@ -88,21 +88,23 @@ export async function fetchHomepage(obj) {
 
   export async function friendsPage(obj) {
     try {
-        //const results = await query(`SELECT * from`); // select a whole row which has the said attribute in the incoming obect
-        if (obj.type === "friendsPageSearch") {
-            const results = await query(`SELECT username, name, hometown, age, interests, school FROM users where name = ?`, [obj.searchItem]); // OR age = ? OR school = ? OR interests = ?
+        if (obj.type === "recommend") {
+            const results = await query(`SELECT username, name, interests, school, age, hometown
+                FROM users 
+                WHERE school = ?
+                  OR hometown = ?
+                  OR age = ?`, [obj.school, obj.hometown, obj.age]        
+                );
             if (results.length > 0) {
+                console.log(`From friends fetched: ${results[0]}`);
                 return results;
+            } else {
+                return 0;
             }
-            return 0;
-        } else { //friendsPageStart
-            const results = await query(`SELECT username, name, hometown, age, interests, school FROM users where name = ?`, [obj.content.name]); // OR age = ? OR school = ? OR interests = ?
-            if (results.length > 0) {
-                return results[0];
-            }
-            console.error(`Errorfetching the friendsPageStart `);
-            return 0;
+        } else if (obj.type === "search") {
+            
         }
+
     } catch (error) {
         conseole.error(`Error fetching the friends data!`);
         throw error;

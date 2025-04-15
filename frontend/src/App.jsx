@@ -1,4 +1,3 @@
-import { useWebSocket, WebsocketProvider } from './components/webs.jsx'; 
 import { useEffect, useState } from 'react';
 import { IoMdHome, IoMdPeople, IoMdChatbubbles, IoMdSettings } from "react-icons/io";
 import { LoginPage } from "./components/login.jsx";
@@ -15,19 +14,15 @@ function App() {
 
   if (!isAuthenticated) {
     return isLogin ? (
-      <WebsocketProvider>
       <LoginPage
         onLogin={() => setIsAuthenticated(true)}
         onSwitchToSignup={() => setIsLogin(false)}
       />
-      </WebsocketProvider>
     ) : (
-      <WebsocketProvider>
       <SignupPage
         onSignup={() => setIsAuthenticated(true)}
         onSwitchToLogin={() => setIsLogin(true)}
       />
-      </WebsocketProvider>
     );
   }
 
@@ -57,12 +52,10 @@ function App() {
 
       <main className="main container">
           <>
-          <WebsocketProvider>
             {currentPage === 'home' && <HomePage/>}
             {currentPage === 'friends' && <FriendsPage/>}
             {currentPage === 'messages' && <MessagesPage/>}
             {currentPage === 'settings' && <SettingsPage/>}
-          </WebsocketProvider>
           </>
       </main>
     </div>

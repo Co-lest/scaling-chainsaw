@@ -19,8 +19,9 @@ export const WebsocketProvider = ({children}) => {
     }
 
     ws.current.onmessage = (data) => {
-      setMessage(JSON.parse(data.data));  // log - { logbool: {data} } , sign - {type: "sign", content:data or false } 
-      console.log(message);
+      let dataReceived = JSON.parse(data.data)
+      console.log(dataReceived);
+      setMessage(dataReceived);  // log - { logbool: {data} } , sign - {type: "sign", content:data or false } 
     }
 
     ws.current.onclose = () => {
@@ -38,7 +39,7 @@ export const WebsocketProvider = ({children}) => {
         ws.current.close(); // disconnects when the component unmounts
       }
     }
-  }, []);
+  }, [message]);
 
   const sendMessage = (msg) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {

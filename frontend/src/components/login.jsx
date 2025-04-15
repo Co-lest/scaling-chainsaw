@@ -14,7 +14,7 @@ export function LoginPage({ onLogin, onSwitchToSignup }) {
 
   useEffect(() => {
     if (message && message.logbool !== null) {
-      console.log(message);
+      // console.log(message);
       if (message.logbool) {
         onLogin();
       } else {

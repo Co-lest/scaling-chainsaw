@@ -2,20 +2,24 @@ import { useWebSocket } from "./webs";
 import { useEffect, useState } from "react";
 
 export function HomePage() {
-  const { message, sendMessage, isConnected } = useWebSocket();
+  const { message, sendMessage, isConnected, friends } = useWebSocket();
   const [isLoading, setIsLoading] = useState(true);
   const [userdata, setUserData] = useState(null);
 
   useEffect(() => {
-    console.log("Received WebSocket message:", message); // logs out null
-  
+  try {
+      
     if (message.logbool || message.content) {
-      setUserData(userDataFromMessage);
+      setUserData(message.logbool || message.content);
       setIsLoading(false);
     } else {
-      sendMessage(JSON.stringify({ content: "Issue with message!" }));
+      throw new Error(`Mmmmhhh weird: ws message is undefined!`); 
     }
-  }, [message, isConnected]);
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+  }, [message]);
 
   if (isLoading) {
     return (
@@ -48,7 +52,7 @@ export function HomePage() {
               alt="Profile"
               className="profile-image"
             />
-            <p className='profile-name'>{userdata?.username || 'N/A'}</p>
+            <p className='profile-name'>{userdata.username || 'N/A'}</p>
             <p className="profile-name">{userdata?.name || 'N/A'}</p>
             <p className="profile-detail">Age: {userdata?.age || 'N/A'}</p>
             <p className="profile-detail">Interests: {userdata?.interests || 'N/A'}</p>
