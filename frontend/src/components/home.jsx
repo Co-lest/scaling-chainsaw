@@ -2,7 +2,7 @@ import { useWebSocket } from "./webs";
 import { useEffect, useState } from "react";
 
 export function HomePage() {
-  const { message, sendMessage, isConnected, friends } = useWebSocket();
+  const { message, sendMessage, isConnected } = useWebSocket();
   const [isLoading, setIsLoading] = useState(true);
   const [userdata, setUserData] = useState(null);
 

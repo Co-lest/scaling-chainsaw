@@ -102,8 +102,32 @@ export async function fetchHomepage(obj) {
                 return 0;
             }
         } else if (obj.type === "search") {
+            let hometowns = obj.hometown?.split(",");
+            let schools = obj.school?.split(",");
+            let interestsArr = obj.interests?.split(",");
+
+            let resultsArr;
             
+            if (hometowns.length > 1) {
+                hometowns.map(async (element) => {
+                    let element1 = [ `${element.trim()}`, `, ${element.trim()},`, `, ${element.trim()}` ];
+                    element1.map(async (real) => {
+                        const results = await query(`SELECT username, name, interests, school, age, hometown
+                            FROM users
+                            WHERE name = ?
+                            OR age = ?
+                            OR interests LIKE ?`, [obj.name, obj.age, obj.real, ]);
+    
+                        if (results.length > 0) {
+                            resultsArr.append(results);
+                        }
+                    });
+                });
+            }
+            console.log(`Searched and found: ${resultsArr}`);
         }
+
+        // SELECT `username` FROM `users` WHERE `interests` LIKE '%Football%' OR `interests` LIKE `%%`;
 
     } catch (error) {
         conseole.error(`Error fetching the friends data!`);

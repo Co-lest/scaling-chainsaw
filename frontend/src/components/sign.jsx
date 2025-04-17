@@ -37,6 +37,7 @@ export function SignupPage({ onSignup, onSwitchToLogin}) {
     // });
     if (isConnected) {
       sendMessage(formData);
+      document.querySelector(".space-y-4").reset(); // reset form
     } else {
       console.error(`Ws is not connected!`);
     }

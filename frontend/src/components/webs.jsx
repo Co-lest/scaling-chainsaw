@@ -4,7 +4,16 @@ const WebSocketContext = createContext(null);
 export const WebsocketProvider = ({children}) => {
   const [isConnected, setIsConnected] = useState(false);
   const [message, setMessage] = useState(null);
+  // const [userdata, setUserdata] = useState(null);
+  // const [friendsReceived, setFriendsReceived] = useState(null);
 
+
+  //       if (message?.logbool || message?.content) {
+  //       setUserdata(message?.logbool || message?.content);
+  //     } else if (message?.content === "friendsFound") {
+  //       setFriendsReceived(message.content);
+  //       console.log(`friends set`)
+  //     }
   const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
   const port = 3333;
 
