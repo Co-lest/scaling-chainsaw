@@ -1,8 +1,7 @@
 import http from "http";
 import "dotenv/config";
 import { WebSocketServer } from "ws";
-import { connectDatabase, loginUser, insertUser, friendsPage } from "./database/database.js";
-import { FriendsPage } from "../frontend/src/components/friends.jsx";
+import { connectDatabase, loginUser, insertUser, friendsPage, connectUser } from "./database/database.js";
 
 const port = process.env.PORT || 5678;
 let connectedtodatabase = false;
@@ -89,9 +88,22 @@ wss.on("connection", (ws) => {
         } else if (dataReceived.type === "search") {
           friendsPage(dataReceived)
           .then((friendsFound) => {
-
+            let sendFriends = {};
+            sendFriends.type = "friendsFound";
+            sendFriends.content = friendsFound;
+  
+            if (ws.readyState === ws.OPEN) {
+              ws.send(JSON.stringify(sendFriends));
+            }
           });
         }
+      } else if (dataReceived.type === "connect") {
+        connectUser(dataReceived)
+        .then((success) => {
+          if (ws.readyState == ws.OPEN) {
+            ws.send(JSON.stringify(success));
+          }
+        })
       } else {
         throw new Error("Cannot connect to database!");
       }

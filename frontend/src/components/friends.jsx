@@ -13,9 +13,13 @@ export function FriendsPage() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [friendsFound, setFriendsFound] = useState([]);
-  const { message, sendMessage, isConnected } = useWebSocket();
+  const { message, userdata2, sendMessage, isConnected } = useWebSocket();
 
-  let userdata;
+  let userdata = userdata2;
+
+  if (true) {
+    console.log(`Testing: ${userdata}`);
+  }
 
   useEffect(() => {
     try {
@@ -51,10 +55,10 @@ export function FriendsPage() {
     e.preventDefault();
     console.log(friendsPageSearch);
 
-    if (!(friendsPageSearch.name.trim()) && !(friendsPageSearch.hometown.trim()) && friendsPageSearch.age < 3 && !(friendsPageSearch.school.trim()) && !(friendsPageSearch.interests.trim())) {
-      console.error(`Cannot search an empty form!`); // or create a pop up
+    if (!(friendsPageSearch.name.trim() === "") && !(friendsPageSearch.hometown.trim()) && friendsPageSearch.age < 10 && !(friendsPageSearch.school.trim()) && !(friendsPageSearch.interests.trim())) {
+      console.error(`Cannot search an empty form!`); // or create a pop up message
     } else {
-      if (isConnected) {
+      if (isConnected) { // set send when onkeydown
         sendMessage(friendsPageSearch);
         
       }
@@ -62,8 +66,17 @@ export function FriendsPage() {
   };
 
   const handleConnect = (username) => {
-    console.log(username); // Now 'username' will hold the correct value
-    // Here you would implement the logic to send a connection request
+      if (isConnected) {
+        let connectFriend = {
+          type: "connect", 
+          username: "Colest_",
+          usernameToConnect: username
+        };
+
+        sendMessage(connectFriend);
+      } else {
+        console.error(`Check your connection!`)
+      }
   };
 
   return (
@@ -137,11 +150,12 @@ export function FriendsPage() {
                 alt="Friend"
                 className="friend-image"
               />
-              <p className="profile-name">{element.username}</p>
-              <p className="profile-name">{element.name}</p>
-              <p className="profile-detail">{element.age}</p>
-              <p className="profile-detail">{element.hometown}</p>
-              <p className="profile-detail">{element.interests}</p>
+              <p className="profile-name">Username: {element.username}</p>
+              <p className="profile-name">Name: {element.name}</p>
+              <p className="profile-detail">Age: {element.age}</p>
+              <p className="profile-detail">Scholl: {element.school}</p>
+              <p className="profile-detail">Hometown: {element.hometown}</p>
+              <p className="profile-detail">Interests: {element.interests}</p>
               <button className="connect-button" onClick={() => handleConnect(element.username)}>Connect</button>
             </div>
           )

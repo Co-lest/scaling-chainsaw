@@ -2,15 +2,16 @@ import { useWebSocket } from "./webs";
 import { useEffect, useState } from "react";
 
 export function HomePage() {
-  const { message, sendMessage, isConnected } = useWebSocket();
+  const { message, userdata, sendMessage, isConnected } = useWebSocket();
   const [isLoading, setIsLoading] = useState(true);
-  const [userdata, setUserData] = useState(null);
+  const [userdata2, setUserData] = useState(null);
+
+  console.log(userdata); // confuses with message
 
   useEffect(() => {
   try {
-      
-    if (message.logbool || message.content) {
-      setUserData(message.logbool || message.content);
+    if (userdata.name) {
+      setUserData(userdata);
       setIsLoading(false);
     } else {
       throw new Error(`Mmmmhhh weird: ws message is undefined!`); 
@@ -19,7 +20,7 @@ export function HomePage() {
     console.error(error);
     return;
   }
-  }, [message]);
+  }, []);
 
   if (isLoading) {
     return (
