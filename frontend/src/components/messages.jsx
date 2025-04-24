@@ -1,4 +1,30 @@
+import { useEffect, useState } from "react";
+import { useWebSocket } from "./webs";
+
 export function MessagesPage() {
+  // const [userdata2, setUserdata] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const { message, userdata, sendMessage, isConnected } = useWebSocket();
+
+  useEffect(() => {
+    if (userdata.username) {
+      console.log(userdata);
+      setIsLoading(flase);
+    }
+  }, []);
+
+  if (isLoading) {
+    return (
+      <section className="section-title">
+        <h2>Welcome to FriendlyConnect</h2>
+        <p>Loading message information...</p>
+        <p className="connection-status">
+          Connection Status: {isConnected ? 'Connected' : 'Disconnected'}
+        </p>
+      </section>
+    );
+  }
+
   return (
     <div className="messages-container">
       <div className="messages-sidebar">

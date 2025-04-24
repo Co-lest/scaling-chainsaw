@@ -104,6 +104,8 @@ wss.on("connection", (ws) => {
             ws.send(JSON.stringify(success));
           }
         })
+      } else if(dataReceived.type === "message") {
+        
       } else {
         throw new Error("Cannot connect to database!");
       }
