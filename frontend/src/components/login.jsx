@@ -3,7 +3,7 @@ import { User, Lock } from "lucide-react";
 import { useWebSocket } from "./webs";
 
 export function LoginPage({ onLogin, onSwitchToSignup }) {
-  const { message, userdata2, sendMessage, isConnected } = useWebSocket();
+  const { message, sendMessage, isConnected } = useWebSocket();
 
   // const [isFormFilled, setIsFormFilled] = useState(false); make a button unclicakble if the form isnt filled
   const [formData, setFormData] = useState({

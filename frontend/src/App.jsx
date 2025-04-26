@@ -36,6 +36,13 @@ function App() {
     </button>
   );
 
+  const clearStorage = () => {
+    localStorage.clear();
+    console.log("Localstorage cleared!");
+  }
+  
+  window.addEventListener("beforeunload", () => clearStorage);
+
   return (
     <div className="min-h-screen">
       <nav className="nav">

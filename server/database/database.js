@@ -191,6 +191,20 @@ export async function connectUser(obj) {
         return;
     }
   }
+
+  export async function insertFriend(obj) {
+    try {
+        const results = await query();
+        if (results.length > 0) {
+            
+        } else {
+            throw new Error(`Error adding friend: ${obj}`);
+        }
+    } catch (error) {
+        console.error(error);
+        return;
+    }
+  }
   
   // connection.end(); // call this function when user has finnished all the database connection I dont think the application will reach a time when this is needed
   

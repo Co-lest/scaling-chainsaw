@@ -7,7 +7,7 @@ const WebSocketContext = createContext(null);
 export const WebsocketProvider = ({ children }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [message, setMessage] = useState(null);
-  const [userdata, setUserdata] = useState(null);
+  // const [userdata, setUserdata] = useState(null);
 
   const ws = useRef(null);
 
@@ -24,17 +24,10 @@ export const WebsocketProvider = ({ children }) => {
       setIsConnected(true);
     };
 
-    // When a message is received
     ws.current.onmessage = (event) => {
       const dataReceived = JSON.parse(event.data);
       console.log("Message received:", dataReceived);
 
-      // Dynamically update userdata depending on what the message contains
-      if (dataReceived?.logbool !== undefined) {
-        setUserdata(dataReceived.logbool);
-      } else if (dataReceived?.content !== undefined) {
-        setUserdata(dataReceived.content);
-      }
       setMessage(dataReceived);
     };
 
@@ -64,7 +57,7 @@ export const WebsocketProvider = ({ children }) => {
   };
 
   return (
-    <WebSocketContext.Provider value={{ message, userdata, sendMessage, isConnected }}>
+    <WebSocketContext.Provider value={{ message, sendMessage, isConnected }}>
       {children}
     </WebSocketContext.Provider>
   );

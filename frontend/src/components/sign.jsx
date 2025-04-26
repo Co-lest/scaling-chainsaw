@@ -3,7 +3,7 @@ import { Lock, User, MapPin, School, Heart } from 'lucide-react';
 import { useWebSocket } from "./webs";
 
 export function SignupPage({ onSignup, onSwitchToLogin}) {
-  const { message, userdata2, sendMessage, isConnected } = useWebSocket();
+  const { message, sendMessage, isConnected } = useWebSocket();
   const [formData, setFormData] = useState({
     type: 'sign',
     username: '',

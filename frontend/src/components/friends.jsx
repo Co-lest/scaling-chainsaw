@@ -13,16 +13,17 @@ export function FriendsPage() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [friendsFound, setFriendsFound] = useState([]);
-  const { message, userdata2, sendMessage, isConnected } = useWebSocket();
+  const { message, sendMessage, isConnected } = useWebSocket();
 
-  let userdata = userdata2;
-
-  if (true) {
-    console.log(`Testing: ${userdata}`);
-  }
+  let userdata;
 
   useEffect(() => {
     try {
+      if (localStorage.getItem("profileData")) {
+        userdata = JSON.parse(localStorage.getItem("profileData"));
+        setIsLoading(false);
+      } 
+
       if (message?.type === "friendsFound") {
         setFriendsFound(message.content);
       } else if (message?.logbool || message?.content) {

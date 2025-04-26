@@ -1,26 +1,47 @@
 import { useWebSocket } from "./webs";
 import { useEffect, useState } from "react";
+let userdata;
 
 export function HomePage() {
-  const { message, userdata, sendMessage, isConnected } = useWebSocket();
+  const { message, sendMessage, isConnected } = useWebSocket();
   const [isLoading, setIsLoading] = useState(true);
-  const [userdata2, setUserData] = useState(null);
-
-  console.log(userdata); // confuses with message
+  const [userdata2, setUserdata2] = useState(null);
 
   useEffect(() => {
-  try {
-    if (userdata.name) {
-      setUserData(userdata);
-      setIsLoading(false);
-    } else {
-      throw new Error(`Mmmmhhh weird: ws message is undefined!`); 
+    try {
+      if (localStorage.getItem('profileData') !== null) {
+        userdata = JSON.parse(localStorage.getItem("profileData"));
+        setUserdata2(userdata);
+        setIsLoading(false);
+        console.log("Localstorage: ", userdata2);
+      } else if (message.logbool !== undefined) { // (message.content !== undefined && !(typeof message.type === "friendsFound"))
+        userdata = message.logbool;
+        setUserdata2(userdata);
+        setIsLoading(false);
+
+        if (localStorage.getItem("profileData") === null) {
+          localStorage.setItem("profileData", JSON.stringify(userdata));
+          console.log("Set: ", userdata);
+        }
+        
+      } else if (message.content !== undefined && message.type !== "friendsFound") {
+        userdata = message.content;
+        setUserdata2(userdata);
+        setIsLoading(false);
+
+        if (localStorage.getItem("profileData") !== null) {
+          localStorage.setItem("profileData", JSON.stringify(userdata));
+          console.log("Set: ", userdata);
+        }
+        
+      } else {
+        throw new Error(`Mmmmhhh weird: ws message is undefined!`);
+      }
+    } catch (error) {
+      console.error(error);
+      return;
     }
-  } catch (error) {
-    console.error(error);
-    return;
-  }
-  }, []);
+  }, [message, sendMessage]);
 
   if (isLoading) {
     return (
@@ -33,6 +54,8 @@ export function HomePage() {
       </section>
     );
   }
+
+  console.log("Final: ", userdata);
 
   return (
     <div>
@@ -53,11 +76,11 @@ export function HomePage() {
               alt="Profile"
               className="profile-image"
             />
-            <p className='profile-name'>{userdata.username || 'N/A'}</p>
-            <p className="profile-name">{userdata?.name || 'N/A'}</p>
-            <p className="profile-detail">Age: {userdata?.age || 'N/A'}</p>
-            <p className="profile-detail">Interests: {userdata?.interests || 'N/A'}</p>
-            <p className='profile-detail'>Hometown: {userdata?.hometown || 'N/A'}</p>
+            <p className='profile-name'>{userdata?.username || userdata[0].username || 'N/A'}</p>
+            <p className="profile-name">{userdata?.name || userdata[0].name || 'N/A'}</p>
+            <p className="profile-detail">Age: {userdata?.age || userdata[0].age || 'N/A'}</p>
+            <p className="profile-detail">Interests: {userdata?.interests || userdata[0].interests || 'N/A'}</p>
+            <p className='profile-detail'>Hometown: {userdata?.hometown || userdata[0].hometown || 'N/A'}</p>
           </div>
         </div>
 
