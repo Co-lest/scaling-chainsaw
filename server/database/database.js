@@ -88,26 +88,20 @@ export async function fetchHomepage(obj) {
 
 export async function connectUser(obj) {
     try { 
-        // friendsBe
         const results = await query(`SELECT friends
             WHERE username = ?`, [obj.username]
         );
+        
+        console.log(results);
 
-        if (results.length > 0) {
-            console.log(results);
-            console.log(`${obj.username} is now a friend of ${obj.usernameToConnect}`);
-        } else {
-            throw new Error("Weird username doesnt exist!");
-        } 
+        // const results2 = await query(`UPDATE users
+        //                             SET friends = ?
+        //                             WHERE username = ?`, [obj.usernameToConnect, obj.username]
+        //                         );
 
-        const results2 = await query(`UPDATE users
-                                    SET friends = ?
-                                    WHERE username = ?`, [obj.usernameToConnect, obj.username]
-                                );
-
-        if (results2.length > 0) {
-            console.log(`${obj.username} is now a friend of ${obj.usernameToConnect}`);
-        }
+        // if (results2.length > 0) {
+        //     console.log(`${obj.username} is now a friend of ${obj.usernameToConnect}`);
+        // }
     } catch (error) {
         console.error(`Error fetching homepage data! ${error}`);
         return;
@@ -188,20 +182,6 @@ export async function connectUser(obj) {
         }
     } catch (error) {
         console.error(`Error fetching the friends data!`);
-        return;
-    }
-  }
-
-  export async function insertFriend(obj) {
-    try {
-        const results = await query();
-        if (results.length > 0) {
-            
-        } else {
-            throw new Error(`Error adding friend: ${obj}`);
-        }
-    } catch (error) {
-        console.error(error);
         return;
     }
   }

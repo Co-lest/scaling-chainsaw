@@ -4,14 +4,32 @@ import { useWebSocket } from "./webs";
 export function MessagesPage() {
   // const [userdata2, setUserdata] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { message, userdata, sendMessage, isConnected } = useWebSocket();
+  const { message, sendMessage, isConnected } = useWebSocket();
+  const [collectMessage, setCollectMessage] = useState({ });
+
+  let userdata;
 
   useEffect(() => {
-    if (userdata.username) {
-      console.log(userdata);
-      setIsLoading(flase);
+    try {
+      if (localStorage.getItem("profileData")) {
+        userdata = JSON.parse(localStorage.getItem("profileData"));
+        setIsLoading(false);
+      } else {
+        throw new Error(`Mmmmhhh weird: localstorage should have data!`);
+      }
+
+      if (isConnected) {
+        sendMessage(JSON.stringify({
+          type: "collectMessage",
+          username: userdata.username
+        }));
+        console.log("Sent connectmesage");
+      }
+    } catch (error) {
+      console.error("Error processing WebSocket message:", error);
+      return;
     }
-  }, []);
+  }, [sendMessage, ]);
 
   if (isLoading) {
     return (
@@ -72,3 +90,6 @@ export function MessagesPage() {
     </div>
   );
 }
+
+
+//thinking of making a new component of ws of each component just an idea

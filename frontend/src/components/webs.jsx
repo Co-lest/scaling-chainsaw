@@ -26,7 +26,7 @@ export const WebsocketProvider = ({ children }) => {
 
     ws.current.onmessage = (event) => {
       const dataReceived = JSON.parse(event.data);
-      console.log("Message received:", dataReceived);
+      // nsole.log("Message received:", dataReceived);
 
       setMessage(dataReceived);
     };

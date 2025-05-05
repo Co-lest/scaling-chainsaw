@@ -13,8 +13,7 @@ export function HomePage() {
         userdata = JSON.parse(localStorage.getItem("profileData"));
         setUserdata2(userdata);
         setIsLoading(false);
-        console.log("Localstorage: ", userdata2);
-      } else if (message.logbool !== undefined) { // (message.content !== undefined && !(typeof message.type === "friendsFound"))
+      } else if (message.logbool !== undefined) {
         userdata = message.logbool;
         setUserdata2(userdata);
         setIsLoading(false);
@@ -55,8 +54,6 @@ export function HomePage() {
     );
   }
 
-  console.log("Final: ", userdata);
-
   return (
     <div>
       <section className="section-title">
@@ -76,11 +73,11 @@ export function HomePage() {
               alt="Profile"
               className="profile-image"
             />
-            <p className='profile-name'>{userdata?.username || userdata[0].username || 'N/A'}</p>
-            <p className="profile-name">{userdata?.name || userdata[0].name || 'N/A'}</p>
-            <p className="profile-detail">Age: {userdata?.age || userdata[0].age || 'N/A'}</p>
-            <p className="profile-detail">Interests: {userdata?.interests || userdata[0].interests || 'N/A'}</p>
-            <p className='profile-detail'>Hometown: {userdata?.hometown || userdata[0].hometown || 'N/A'}</p>
+            <p className='profile-name'>{userdata?.username || 'N/A'}</p>
+            <p className="profile-name">{userdata?.name || 'N/A'}</p>
+            <p className="profile-detail">Age: {userdata?.age || 'N/A'}</p>
+            <p className="profile-detail">Interests: {userdata?.interests || 'N/A'}</p>
+            <p className='profile-detail'>Hometown: {userdata?.hometown || 'N/A'}</p>
           </div>
         </div>
 

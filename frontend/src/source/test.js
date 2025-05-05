@@ -25,3 +25,9 @@ const server = http.createServer(async (req, res) => {
 server.listen(port, () => {
     console.log(`Server listening on port: ${port}`);
 });
+
+if (null) {
+    console.log("This is true");
+} else {
+    console.log("This is false");
+}

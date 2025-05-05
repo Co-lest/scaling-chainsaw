@@ -14,6 +14,7 @@ export function FriendsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [friendsFound, setFriendsFound] = useState([]);
   const { message, sendMessage, isConnected } = useWebSocket();
+  const [connectFriend, setConnectFriend] = useState({ });
 
   let userdata;
 
@@ -40,6 +41,13 @@ export function FriendsPage() {
     }
   }, [message, sendMessage]);
 
+  useEffect(() => {
+    if (isConnected) {
+      sendMessage(JSON.stringify(connectFriend));
+      console.log(`Sent connect`);
+    }
+  }, [connectFriend, sendMessage]);
+
   if (isLoading) {
     return (
       <section className="section-title">
@@ -58,28 +66,24 @@ export function FriendsPage() {
 
     if (!(friendsPageSearch.name.trim() === "") && !(friendsPageSearch.hometown.trim()) && friendsPageSearch.age < 10 && !(friendsPageSearch.school.trim()) && !(friendsPageSearch.interests.trim())) {
       console.error(`Cannot search an empty form!`); // or create a pop up message
+      return;
     } else {
       if (isConnected) { // set send when onkeydown
-        sendMessage(friendsPageSearch);
-        
+        sendMessage(JSON.stringify(friendsPageSearch));
+      } else {
+        //pop up
+        console.error(`Error ws not connected: check connectivity`);
       }
     }
   };
 
   const handleConnect = (username) => {
-      if (isConnected) {
-        let connectFriend = {
+        setConnectFriend ({
           type: "connect", 
           username: "Colest_",
           usernameToConnect: username
-        };
-
-        sendMessage(connectFriend);
-      } else {
-        console.error(`Check your connection!`)
-      }
-  };
-
+        });
+  }
   return (
     <div>
 <div className="friends-header">

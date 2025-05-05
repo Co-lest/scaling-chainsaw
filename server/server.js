@@ -98,14 +98,15 @@ wss.on("connection", (ws) => {
           });
         }
       } else if (dataReceived.type === "connect") {
-        connectUser(dataReceived)
-        .then((success) => {
-          if (ws.readyState == ws.OPEN) {
-            ws.send(JSON.stringify(success));
-          }
-        })
-      } else if(dataReceived.type === "message") {
-        
+        console.log("connect");
+        // connectUser(dataReceived)
+        // .then((success) => {
+        //   if (ws.readyState == ws.OPEN) {
+        //     // ws.send(JSON.stringify(success));
+        //   }
+        // })
+      } else if(dataReceived.type === "collectMessage") {
+        console.log("connect");
       } else {
         throw new Error("Cannot connect to database!");
       }
